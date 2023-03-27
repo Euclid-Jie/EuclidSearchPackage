@@ -22,5 +22,5 @@ setup(
     author='Euclid-Jie',
     author_email='Ouweijie123@outlook.com',
     description='a package for search data from weibo, zhihu, guba and etc.',
-    url='https://github.com/your_username/your_package',
+    url='https://github.com/Euclid-Jie/EuclidSearchPackage',
 )
