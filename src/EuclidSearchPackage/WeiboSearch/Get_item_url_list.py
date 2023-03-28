@@ -2,9 +2,10 @@
 # @Time    : 2023/2/9 20:42
 # @Author  : Euclid-Jie
 # @File    : Get_item_url_list.py
+import os
 import re
 import requests_html
-from Euclidweibo import *
+from ..Utils import Set_header
 
 
 def Get_item_url_list(URL):
@@ -17,8 +18,7 @@ def Get_item_url_list(URL):
     """
     session = requests_html.HTMLSession()
     current_dir = os.path.abspath(os.path.dirname(__file__))
-    parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
-    header = Set_header(os.path.join(parent_dir, 'cookie.txt'))
+    header = Set_header(os.path.join(current_dir, 'cookie.txt'))
     response = session.get(URL, headers=header)
     response.encoding = 'utf-8'
     all_url_list = list(response.html.links)

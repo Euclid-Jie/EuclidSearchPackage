@@ -2,9 +2,10 @@
 # @Time    : 2023/2/9 21:36
 # @Author  : Euclid-Jie
 # @File    : Get_single_weibo_data.py
-
-
-from Euclidweibo import *
+import json
+import os
+import requests
+from ..Utils import Set_header
 
 
 def Get_single_weibo_data(mblogid):
@@ -34,8 +35,7 @@ def Get_single_weibo_data(mblogid):
     """
     URL = 'https://weibo.com/ajax/statuses/show?id={}'.format(mblogid)
     current_dir = os.path.abspath(os.path.dirname(__file__))
-    parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
-    header = Set_header(os.path.join(parent_dir, 'cookie.txt'))
+    header = Set_header(os.path.join(current_dir, 'cookie.txt'))
     response = requests.get(URL, headers=header, timeout=60)  # 使用request获取网页
     html = response.content.decode('utf-8', 'ignore')  # 将网页源码转换格式为html
     data_json = json.loads(html, strict=False)

@@ -4,7 +4,7 @@
 # @File    : EuclidDataTools_test.py
 import pandas as pd
 
-from EuclidDataTools import *
+from .EuclidDataTools import *
 
 if __name__ == '__main__':
     data = {

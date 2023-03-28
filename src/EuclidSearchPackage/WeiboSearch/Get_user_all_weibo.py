@@ -3,11 +3,15 @@
 # @Author  : Euclid-Jie
 # @File    : Get_user_all_weibo.py
 import json
+import os
+
 import requests
 from tqdm import tqdm
-import os
-from Euclidweibo import *
-from Euclidweibo.Utils import Get_json_data
+
+from ..Utils import Get_json_data
+from ..Utils import Set_header
+from ..Utils import CsvClient
+from ..Utils import MongoClient
 
 
 def Get_user_all_weibo(uid, totalPages, begin=1, query=None, colName=None, csv=False):
@@ -25,8 +29,7 @@ def Get_user_all_weibo(uid, totalPages, begin=1, query=None, colName=None, csv=F
     else:
         _COL = CsvClient('Weibo', 'uid_{}'.format(colName))
     current_dir = os.path.abspath(os.path.dirname(__file__))
-    parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
-    _HEADER = Set_header(os.path.join(parent_dir, 'cookie.txt'))
+    _HEADER = Set_header(os.path.join(current_dir, 'cookie.txt'))
     with tqdm(range(begin, totalPages)) as t:
         for pages in t:
             if query:

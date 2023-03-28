@@ -3,11 +3,14 @@
 # @Author  : Euclid-Jie
 # @File    : Get_single_weibo_details.py
 import json
+import os
+
 import requests
 from tqdm import tqdm
 
-import Euclidweibo
-from Euclidweibo import *
+from .Get_longTextContent import Get_longTextContent
+from ..Utils import Set_header
+from ..Utils import MongoClient
 
 
 class Get_single_weibo_details:
@@ -24,11 +27,10 @@ class Get_single_weibo_details:
         method = ['reposts', 'comments', 'attitudes']
     """
 
-    def __init__(self, method, mblogid, header):
+    def __init__(self, method, mblogid):
         """
         :param method: ['reposts', 'comments', 'attitudes'],
         :param mblogid: just like "MrOtA75Fd",
-        :param header: Set_header()
         :return: None
         """
         self.col = None
@@ -41,11 +43,13 @@ class Get_single_weibo_details:
         self.singe_weibo_data = None
         self.mblogid = mblogid
         self.method = method
-        self.header = header
+
+        # init header
+        current_dir = os.path.abspath(os.path.dirname(__file__))
+        self.header = Set_header(os.path.join(current_dir, 'cookie.txt'))
         # self.singe_weibo_data = Euclidweibo.Get_single_weibo_data(self.mblogid, self.header)
         # self.Get_single_weibo_infos()
-        self.col = Euclidweibo.MongoClient('Weibo', mblogid + '_' + method)
-        self.col = Euclidweibo.MongoClient('Weibo', '央视视频-主播说联播-media')
+        self.col = MongoClient('Weibo', mblogid + '_' + method)
 
     def Get_single_weibo_infos(self):
         self.total_pages = {
@@ -79,7 +83,7 @@ class Get_single_weibo_details:
             'mp4_sd_url': self.item['page_info']['media_info']['mp4_sd_url'],
             'media_info': self.item['page_info']['media_info']
         }
-        self.data_json = Euclidweibo.Get_longTextContent(data_json)
+        self.data_json = Get_longTextContent(data_json, self.header)
 
     def Get_reposts_info(self):
         # total_pages = int(self.total_pages['comments_count'] / 15)
@@ -119,4 +123,4 @@ class Get_single_weibo_details:
 
 
 if __name__ == '__main__':
-    Get_single_weibo_details('reposts', mblogid='MrOtA75Fd', header=Set_header('../cookie.txt')).main_get()
+    Get_single_weibo_details('reposts', mblogid='MrOtA75Fd').main_get()
