@@ -4,3 +4,4 @@
 # @File    : __init__.py.py
 from .WeiboSearch import *
 from .Utils import *
+from .Demo import WeiboClassV2

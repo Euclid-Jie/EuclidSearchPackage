@@ -4,14 +4,32 @@ this package is include some tools to get data from weibo、zhihu、guba and etc
 
 The project will continue to be updated and you are welcome to join us on [GitHub](https://github.com/Euclid-Jie/EuclidSearchPackage).
 
-## Existing features
+## How to use
 
-#### 0、set cookie and import package
+### 1、install this package
+
+```shell
+pip install EuclidSearchPackage
+```
+
+### 2、set cookie and import package
 
 ```python
 from EuclidSearchPackage import *
 Set_cookie('cookie.txt')  # 'cookie.txt' is your local cookie file path
 ```
+
+### 3、use `WeiboClassV2` to get data
+
+```python
+import src.EuclidSearchPackage as ESP
+ESP.WeiboClassV2('量化实习', Mongo=False).main('2023-03-11-00', '2023-03-27-21')
+```
+
+## Existing features
+
+you can use these methods to fulfill yours purpose, just like `WeiboClassV2`
+
 
 ### 1、 get single weibo's data
 
