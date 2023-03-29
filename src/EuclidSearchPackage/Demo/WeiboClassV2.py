@@ -45,7 +45,7 @@ class WeiboClassV2:
         while NetPage:
             page += 1
             targetUrl = self.UrlFormat(self.keyWord, beginTime, endTime, page)
-            onePageList =Get_item_url_list(targetUrl)
+            onePageList = Get_item_url_list(targetUrl)
             tmpLen = len(self.UrlList)
             self.UrlList.extend(onePageList)
             self.UrlList = list(set(self.UrlList))

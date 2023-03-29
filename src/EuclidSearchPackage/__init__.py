@@ -5,3 +5,4 @@
 from .WeiboSearch import *
 from .Utils import *
 from .Demo import WeiboClassV2
+from .Demo import WeiboClassV3
