@@ -5,15 +5,15 @@
 import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
-from WeiboClassV2 import WeiboClassV2
+from .WeiboClassV2 import WeiboClassV2
 from ..Utils import CsvClient, MongoClient
-from ..WeiboSearch import Get_single_weibo_data_async
+from ..WeiboSearch import Get_single_weibo_data
 from ..WeiboSearch import Get_longTextContent
 
 
 class WeiboClassV3(WeiboClassV2):
-    def __init__(self, keyWord=None, method=None, baseUrl=None, Mongo=True, max_work_count=20, LongText=False):
-        super().__init__(keyWord, method, baseUrl, Mongo)
+    def __init__(self, keyWord=None, method=None, Mongo=True, max_work_count=10, LongText=False):
+        super().__init__(keyWord, method, Mongo)
         self.LongText = LongText
         self.max_work_count = max_work_count
 
@@ -40,15 +40,19 @@ class WeiboClassV3(WeiboClassV2):
             self.get_url_list(beginTime, NewEndTime)
             if len(self.UrlList) <= 5:
                 break
-            print("\t >>> get blog data begin ...")
+            print("\n\t >>> get blog data begin ...")
             # multitask get data
             allData = []
-            results = self.run_thread_pool_sub(Get_single_weibo_data_async,
+            results = self.run_thread_pool_sub(Get_single_weibo_data,
                                                [mblogid.split("/")[-1] for mblogid in self.UrlList],
                                                max_work_count=self.max_work_count)
             for future in as_completed(results):
                 data_json = future.result()
                 allData.append(data_json)
+
+            # drop None because of json decode error
+            allData = [data_json for data_json in allData if data_json]
+            print("\t >>> the number of blog is {}".format(len(allData)))
 
             # LongText process
             if self.LongText:
@@ -85,7 +89,7 @@ class WeiboClassV3(WeiboClassV2):
             if BreakOrNot:
                 break
 
-        print(">>> get blog info done")
+        print("\n>>> get blog info done")
 
 
 if __name__ == '__main__':

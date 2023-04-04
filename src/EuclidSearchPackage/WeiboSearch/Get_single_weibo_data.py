@@ -5,9 +5,11 @@
 import json
 import os
 import requests
+from retrying import retry
 from ..Utils import Set_header
 
 
+@retry(stop_max_attempt_number=10)
 def Get_single_weibo_data(mblogid):
     """
     get single weibo's data by weibo_url, just like https://weibo.com/1310272120/MrOtA75Fd
@@ -37,17 +39,15 @@ def Get_single_weibo_data(mblogid):
     current_dir = os.path.abspath(os.path.dirname(__file__))
     header = Set_header(os.path.join(current_dir, 'cookie.txt'))
     response = requests.get(URL, headers=header, timeout=60)  # 使用request获取网页
+    if response.status_code != 200:
+        raise AttributeError("请更新Cookie, 并等候片刻后重试!, 当前状态码为:{}".format(response.status_code))
     html = response.content.decode('utf-8', 'ignore')  # 将网页源码转换格式为html
     data_json = json.loads(html, strict=False)
-    if '展开' in data_json['text']:
-        URL = 'https://weibo.com/ajax/statuses/longtext?id={}'.format(mblogid)
-        response = requests.get(URL, headers=header, timeout=60)  # 使用request获取网页
-        html = response.content.decode('utf-8', 'ignore')  # 将网页源码转换格式为html
-        longTextContent = json.loads(html)['data']['longTextContent']
-        data_json['longTextContent'] = longTextContent.encode('gbk', 'ignore').decode('gbk')
-    else:
-        data_json['longTextContent'] = ''
-    return data_json
+    try:
+        data_json = json.loads(html, strict=False)
+        return data_json
+    except json.JSONDecodeError:
+        return None
 
 
 if __name__ == '__main__':
@@ -60,7 +60,6 @@ if __name__ == '__main__':
         'comments_count': data['comments_count'],
         'reposts_count': data['reposts_count'],
         'text': data['text'],
-        'text_raw': data['text_raw'],
-        'longTextContent': data['longTextContent']
+        'text_raw': data['text_raw']
     }
     print(part_data)

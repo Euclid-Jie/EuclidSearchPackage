@@ -7,7 +7,6 @@ from .Get_user_info import Get_user_info
 from .Set_cookie import Set_cookie
 from .Get_single_weibo_data import Get_single_weibo_data
 from .Get_user_all_weibo import Get_user_all_weibo
-from .Get_single_weibo_data_async import Get_single_weibo_data_async
 from .Get_longTextContent import Get_longTextContent
 
 # 未完成
@@ -15,4 +14,4 @@ from .Get_single_weibo_details import Get_single_weibo_details
 
 __all__ = ['Get_user_all_weibo', 'Get_user_info', 'Set_cookie',
            'Get_item_url_list', 'Get_single_weibo_data',
-           'Get_single_weibo_data_async', 'Get_longTextContent']
+           'Get_longTextContent']

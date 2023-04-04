@@ -6,12 +6,12 @@ import json
 from urllib.parse import urlencode
 import pandas as pd
 from tqdm import tqdm
-from ..WeiboSearch import Get_single_weibo_data, Get_item_url_list
+from ..WeiboSearch import Get_single_weibo_data, Get_item_url_list, Get_longTextContent
 from ..Utils import CsvClient, MongoClient
 
 
 class WeiboClassV2:
-    def __init__(self, keyWord=None, method=None, baseUrl=None, Mongo=True):
+    def __init__(self, keyWord=None, method=None, Mongo=True):
         self.keyWord = keyWord
         self.UrlList = None
         self.baseUrl = 'https://s.weibo.com/weibo?'
@@ -52,20 +52,29 @@ class WeiboClassV2:
             if len(self.UrlList) == tmpLen:
                 NetPage = False
             print('\r\t\t page: {}, len: {}'.format(page, len(self.UrlList)), end='')
-        print("\n\t >>> get blog url done")
 
     @staticmethod
     def select_field(data):
+        if 'page_info' in data.keys():
+            video_url = data['page_info']['media_info']['mp4_720p_mp4']
+        else:
+            video_url = ''
+
         selectedData = {
+            # base filed
             'time': data['created_at'],
             'mid': data['mid'],
             'nick_name': data['user']['screen_name'],
+            'useId': data['user']['id'],
+            'mblogUrl': "https://weibo.com/{}/{}".format(data['user']['id'], data['mid']),
+            # addition field
             'attitudes_count': data['attitudes_count'],
             'comments_count': data['comments_count'],
             'reposts_count': data['reposts_count'],
             'text': data['text'],
             'text_raw': data['text_raw'],
-            'longTextContent': data['longTextContent']
+            'longTextContent': data['longTextContent'],
+            'video_url': video_url
         }
         return selectedData
 
@@ -77,7 +86,7 @@ class WeiboClassV2:
         else:
             _COL = CsvClient('Weibo', ColName)
 
-        print("\n>>> get blog info begin ...")
+        print(">> get blog info begin ...")
         NewEndTime = endTime
         while NewEndTime > beginTime:
             print('\t time span: {} - {}'.format(beginTime, NewEndTime), end='')
@@ -89,8 +98,12 @@ class WeiboClassV2:
             for mblogid in tqdm(self.UrlList):
                 try:
                     data_json = Get_single_weibo_data(mblogid.split("/")[-1])
-                    selectedData = self.select_field(data_json)
-                    _COL.insert_one(selectedData)
+                    if data_json:
+                        data_json = Get_longTextContent(data_json)
+                        selectedData = self.select_field(data_json)
+                        _COL.insert_one(selectedData)
+                    else:
+                        pass
                 except json.decoder.JSONDecodeError:
                     pass
                 except KeyError:
