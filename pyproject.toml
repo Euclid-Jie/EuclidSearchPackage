@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "EuclidSearchPackage"
-version = "0.5.1"
+version = "0.6.1"
 authors = [
   { name="Euclid Jie", email="Ouweijie123@outlook.coom" },
 ]

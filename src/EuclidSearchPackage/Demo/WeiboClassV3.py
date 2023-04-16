@@ -90,7 +90,3 @@ class WeiboClassV3(WeiboClassV2):
                 break
 
         print("\n>>> get blog info done")
-
-
-if __name__ == '__main__':
-    WeiboClassV3('量化实习', Mongo=False).main('2023-02-11-00', '2023-03-27-21')

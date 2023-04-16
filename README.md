@@ -19,7 +19,16 @@ import EuclidSearchPackage as ESP
 ESP.Set_cookie('cookie.txt')  # 'cookie.txt' is your local cookie file path
 ```
 
-### 3、use `WeiboClassV3` to get data
+### 3、use `WeiboClassV1 ` to get data
+
+```python
+timeBegin = '2023-03-01-0'
+timeEnd = '2023-03-10-0'
+demoClass = ESP.WeiboClassV1(Mongo=False)
+demoClass.main_get(['北师大', '珠海'], timeBegin, timeEnd)
+```
+
+### 4、use `WeiboClassV3` to get data
 
 compare to `WeiboClassV2`, `WeiboClassV3` use thread to get data more fast.
 

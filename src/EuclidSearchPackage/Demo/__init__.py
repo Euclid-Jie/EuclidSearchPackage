@@ -5,3 +5,4 @@
 
 from .WeiboClassV2 import WeiboClassV2
 from .WeiboClassV3 import WeiboClassV3
+from .WeiboClassV1 import WeiboClassV1
